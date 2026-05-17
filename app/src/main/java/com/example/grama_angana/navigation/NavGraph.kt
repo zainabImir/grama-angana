@@ -1,5 +1,6 @@
 package com.example.grama_angana.navigation
 
+import com.example.grama_angana.ui.screens.maintainance.MaintenanceJarScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,6 +11,7 @@ import com.example.grama_angana.ui.screens.dashboard.DashboardScreen
 import com.example.grama_angana.ui.screens.profile.ProfileScreen
 import com.example.grama_angana.ui.screens.settings.SettingsScreen
 import com.example.grama_angana.ui.screens.booking.BookingScreen
+import com.example.grama_angana.ui.screens.calendar.EventCalendarScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
@@ -51,12 +53,21 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(route = Screen.Applications.route) {
             ApplicationsScreen(navController = navController)
         }
-        composable(route = Screen.Applications.route) {
-            ApplicationsScreen(navController = navController)
+
+        composable(route = "booking_form_route/{selectedDate}") { backStackEntry ->
+            val dateArg = backStackEntry.arguments?.getString("selectedDate") ?: ""
+            BookingScreen(
+                navController = navController,
+                preSelectedDate = dateArg
+            )
         }
 
-        composable(route = Screen.Booking.route) {
-            BookingScreen()
+        composable(route = "calendar_route") {
+            EventCalendarScreen(navController = navController)
+        }
+
+        composable(route = Screen.Applications.route) {
+            MaintenanceJarScreen()
         }
     }
 }

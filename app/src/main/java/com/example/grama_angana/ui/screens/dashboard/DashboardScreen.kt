@@ -125,8 +125,8 @@ fun ServicesGrid(navController: NavController, modifier: Modifier = Modifier) {
         ServiceItem("Citizen ID", Icons.Default.Badge),
         ServiceItem("Grama Niladhari", Icons.Default.Person),
         ServiceItem("Payments", Icons.Default.Payments),
-        ServiceItem("Community Support", Icons.Default.Feedback),
-        ServiceItem("Hall Booking", Icons.Default.Event)
+        ServiceItem("Hall Booking", Icons.Default.Event),
+        ServiceItem("Maintenance Jar", Icons.Default.Build)
     )
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -137,10 +137,11 @@ fun ServicesGrid(navController: NavController, modifier: Modifier = Modifier) {
                         service = service,
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            if (service.name == "Hall Booking") {
-                                navController.navigate(Screen.Booking.route)
-                            } else {
-                                navController.navigate(Screen.Applications.route)
+                            when (service.name) {
+                                // Redirection pathway updated to evaluate calendar states!
+                                "Hall Booking" -> navController.navigate("calendar_route")
+                                "Maintenance Jar" -> navController.navigate(Screen.Applications.route)
+                                else -> navController.navigate(Screen.Applications.route)
                             }
                         }
                     )
@@ -156,25 +157,33 @@ fun ServicesGrid(navController: NavController, modifier: Modifier = Modifier) {
 data class ServiceItem(val name: String, val icon: ImageVector)
 
 @Composable
+
 fun ServiceCard(service: ServiceItem, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Card(
         onClick = onClick,
-        modifier = modifier.height(110.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(service.icon, contentDescription = null, modifier = Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = service.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Icon(
+                imageVector = service.icon,
+                contentDescription = service.name,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = service.name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }

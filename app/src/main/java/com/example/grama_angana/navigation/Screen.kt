@@ -12,10 +12,11 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector?
     object Settings : Screen("settings", "Settings", Icons.Default.Settings)
     object Applications : Screen("applications", "Applications")
 
+    // Clean, short string identity for navigation
     object Booking : Screen("booking", "Booking")
     object Login : Screen("login", "Login")
     object Register : Screen("register", "Register")
-    
+
     companion object {
         val bottomNavItems = listOf(Dashboard, Profile, Settings)
     }

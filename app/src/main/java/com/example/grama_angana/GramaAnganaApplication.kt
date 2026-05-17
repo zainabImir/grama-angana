@@ -8,6 +8,7 @@ import dagger.hilt.android.HiltAndroidApp
 class GramaAnganaApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Force Firebase to initialize completely before any screen loads!
         FirebaseApp.initializeApp(this)
     }
 }

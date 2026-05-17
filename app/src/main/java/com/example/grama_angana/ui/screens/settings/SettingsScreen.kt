@@ -16,13 +16,17 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onLogout: () -> Unit) {
+fun SettingsScreen(
+    onLogout: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
+    val darkModeEnabled by viewModel.isDarkModeEnabled.collectAsState(initial = false)
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var darkModeEnabled by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -40,25 +44,26 @@ fun SettingsScreen(onLogout: () -> Unit) {
         ) {
             Text(text = "Preferences", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             SettingsSwitchItem("Push Notifications", Icons.Default.Notifications, notificationsEnabled) {
                 notificationsEnabled = it
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
-            SettingsSwitchItem("Dark Mode", Icons.Default.DarkMode, darkModeEnabled) {
-                darkModeEnabled = it
+
+            SettingsSwitchItem("Dark Mode", Icons.Default.DarkMode, darkModeEnabled) { isChecked ->
+                viewModel.toggleTheme(isChecked)
             }
-            
+
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "Account", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             SettingsClickItem("Change Password", Icons.Default.Lock) { /* TODO */ }
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
             SettingsClickItem("Privacy Policy", Icons.Default.PrivacyTip) { /* TODO */ }
-            
+
             Spacer(modifier = Modifier.height(40.dp))
-            
+
             OutlinedButton(
                 onClick = {
                     FirebaseAuth.getInstance().signOut()
@@ -116,7 +121,11 @@ fun SettingsClickItem(title: String, icon: ImageVector, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = title, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.weight(1f))
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            )
         }
     }
 }
